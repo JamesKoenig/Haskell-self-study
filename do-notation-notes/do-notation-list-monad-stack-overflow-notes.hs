@@ -1,4 +1,4 @@
--- this file is notes and studies based on a stack overflow question,
+-- this file contains notes and studies based on a stack overflow question,
 --   which can be found at:
 -- https://stackoverflow.com/questions/69988537/do-notation-and-the-list-monad
 
@@ -77,12 +77,14 @@ filterMaybeEven perhapsInt =
 -- > filterMaybeEven <$> Just <$> [1..8]
 -- < [Nothing,Just 2,Nothing,Just 4,Nothing,Just 6,Nothing,Just 8]
 
--- the above two, but with do notation, and monadic abstraction via guard
+-- the above two functions, but with do notation,
+--   and monadic abstraction via the guard function
 filterEvenDo :: (Monad m, Alternative m) => m Int -> m Int
 filterEvenDo numbers = do
-    numbah <- numbers
-    guard (numbah `mod` 2 == 0)
-    return numbah
+    numbah <- numbers             --conjure forth our numbah if possible
+    guard (numbah `mod` 2 == 0)   --check if it's even fail if not
+    return numbah                 --if successful give numbah back in its
+                                  --  containing type
 
 -- all 4 of the above filter-even commands run on the same:
 -- > filterEvenDo [1..10]
