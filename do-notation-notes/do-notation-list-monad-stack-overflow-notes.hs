@@ -23,7 +23,7 @@ findSumGuard as bs = do
 -- > findSumGaurd [1..4] [1..4]
 -- < [(1,1,2),(1,2,3),(1,3,4),(2,1,3),(2,2,4),(3,1,4)]
 --
--- however with the abstractions used we can run this with:
+-- note (ie: "yes and,") with the abstractions used we can run this with:
 -- > findSumGuard (Just 2) (Just 4)
 -- < Just (2,2,4)
 -- since `a <- as` lifts the Int out of Maybe as well as it does for lists
