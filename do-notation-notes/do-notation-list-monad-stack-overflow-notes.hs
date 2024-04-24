@@ -99,6 +99,13 @@ filterEvenDo numbers = do
 -- > Just <$> filterEvenDo [1..8]
 -- < [Just 2,Just 4,Just 6,Just 8]
 
+-- one can even import `maybeToList` from Data.Maybe (or write their own, it's
+--  pretty simple) giving something along the lines of the following:
+-- > import Data.Maybe (maybeToList) -- maybeToList :: Maybe a -> [a]
+-- > filterEvenDo <$> Just <$> [1..10] >>= maybeToList
+-- < [2,4,6,8,10]
+-- this stuff is wild.  And hoogle is really useful.
+
 {-====================DRILL DOWN ON NERDY STUFF FOLLOWS======================-}
 
 --NB: ON MonadPlus in the original SO code, vs Alternative used in this study:
@@ -135,3 +142,16 @@ filterEvenDo numbers = do
 --  I distinctly erred towards its most pedantic definition as part of the
 --    Alternative constraint, even if the Haskell type system currently allows
 --      one to use MonadPlus for [] and Maybe monads
+--
+
+{-================================= Addenda =================================-}
+{-
+ - since it's useful to note, the type signatures of the protagonists of this
+ -  study are:
+ -
+ - (>>=) :: Monad m => m a -> (a -> m b) -> m b
+ - guard :: Alternative f => Bool -> f ()
+ -
+ - moreso for the examples above:
+ - (<$>)  :: Functor f => (a -> b) -> f a -> f b -- aka "fmap", or map on lists
+ -}
