@@ -1,0 +1,7 @@
+-- why are:
+--    (((fmap show)   (\x -> [x,1..3]) ) :: Int -> String) 0
+-- and
+--    (((     show) . (\x -> [x,1..3]) ) :: Int -> String) 0
+-- resolving to the same result of:
+--    "[0,1,2,3]"
+-- ?
