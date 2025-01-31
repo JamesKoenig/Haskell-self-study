@@ -5,3 +5,24 @@
 -- resolving to the same result of:
 --    "[0,1,2,3]"
 -- ?
+
+----------------------------------- SPOILERS -----------------------------------
+-- functions, i.e. saturated (->) instances (t1 -> t2) as defined in the
+--   core spec, are defined as functors with the following rule
+--   (Base.hs, line #s and code is from v8.6.5-release):
+--
+-- 817 -- | @since 2.01
+-- 818 instance Functor ((->) r) where
+-- 819     fmap = (.)
+--
+-- n.b. the comment (on line 817 in this version) has been changed in later
+--      versions to:
+--        | @since base-2.01
+--
+-- so fmap on functions IS composition,
+-- (+2) <$> (*2) $ 4
+-- turns into
+-- (+2) . (*2) $ 4
+--
+-- this information is visible in prelude with
+-- :i (->)
