@@ -9,7 +9,15 @@
 ----------------------------------- SPOILERS -----------------------------------
 -- this will make a times table from 1 to 10
 (\xs -> [ (*x) <$> xs | x <- xs]) [1..10]
+-- or:
+(\xs -> [ f <$> xs | f <- (*) <$> xs ]) [1..10]
 -- alternatively
 (\xs -> do { x <- xs; return $ (*x) <$> xs }) [1..10]
 -- or, using bind
 (\xs -> xs >>= \x -> pure $ (*x) <$> xs) [1..10]
+-- since `>>=` can be defined as `xs >>= f = join (fmap f xs)`
+(\xs -> fmap (\x -> (*x) <$> xs) xs) [1..10]
+--or, purely in terms of (<$>)
+(\xs -> (\f -> f <$> xs) <$> ((*) <$> xs)) [1..10]
+-- alternatively via the functor laws one of the fmaps can be reduced down to:
+(\xs -> (\x -> (*) x <$> xs) <$> xs) [1..10]
