@@ -47,3 +47,15 @@ bubbles' xs = trampoline bstep' $ Steppy True [] xs
 doNTimes :: Monad m => Int -> (a -> m a) -> m a -> m a
 doNTimes 0 _  acc = acc
 doNTimes n fm acc = doNTimes (n-1) fm (acc >>= fm)
+
+printNGo :: (Show a, Ord a) => Either [a] (Step a) -> IO ()
+printNGo xs = go . pure . stepify $ xs
+  where go :: (Show a, Ord a) => EnSteppe a -> IO ()
+        go (Left  lst)  = print lst >> putStrLn "done"
+        go (Right step) = do
+          print step
+          go . bstep' $ step
+
+interleave :: forall a. [a] -> [a] -> [a]
+interleave []     ys = ys
+interleave (x:xs) ys = x : (interleave ys xs)
