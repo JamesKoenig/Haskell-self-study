@@ -1,13 +1,14 @@
-{-# LANGUAGE UndecidableInstances #-}
 module Elimonoid where
 
-class Elimonoid w where
-  elimonoid :: Monoid a => w a -> a
+elimonoid :: (Monoid a, Foldable t) => t a -> a
+elimonoid = foldMap ((<>)mempty)
 
-instance Elimonoid Maybe where
-  elimonoid Nothing  = mempty
-  elimonoid (Just x) = x
+joinE :: (Monoid a, Functor f, Foldable f) => f (f a) -> f a
+joinE fx = elimonoid <$> fx
 
-instance Foldable t => Elimonoid t where
-  --elimonoid :: Monoid a => t a -> a
-  elimonoid = foldMap (<>mempty)
+bindE :: (Monoid b, Functor f, Foldable f) => f a -> (a -> f b) -> f b
+bindE mx f = joinE . (fmap f) $ mx
+
+applyE :: (Monoid (f b), Functor f, Foldable f) => f (a -> b) -> f a -> f b
+applyE fs xs = elimonoid $ (\f -> f <$> xs) <$> fs
+
