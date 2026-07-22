@@ -7,10 +7,12 @@ data Steppy a = Steppy { sorted   :: Bool
                        , rest     :: [a]
                        }
 
+type EnStepped a = Either [a] (Steppy a)
+
 instance Show a => Show (Steppy a) where
   show (Steppy sorted acc rest) =
     let showList = [show sorted, show acc, show rest] :: [String]
-        shownFields = (intercalate ", " showList) :: String
+        shownFields = (intercalate ", " showList)     ::  String
     in "{"<>shownFields<>"}"
 
 -- { True,       [], [1,3,2] }
@@ -23,6 +25,9 @@ instance Show a => Show (Steppy a) where
 -- { True,    [2,1],     [3] }
 -- { True,  [3,2,1],      [] } -- this is our end condition
 
+-- single step of a bubble sort
+--   keeping this with Either [a] (Steppy a) so (a -> m a) remains clear
+--     (vs :: Steppy a -> EnStepped a)
 bstep' :: Ord a => Steppy a -> Either [a] (Steppy a)
 bstep' (Steppy True  acc [] )    = Left . reverse $ acc
 bstep' (Steppy False acc [] )    = pure (Steppy True [] (reverse acc))
@@ -48,14 +53,24 @@ doNTimes :: Monad m => Int -> (a -> m a) -> m a -> m a
 doNTimes 0 _  acc = acc
 doNTimes n fm acc = doNTimes (n-1) fm (acc >>= fm)
 
-printNGo :: (Show a, Ord a) => Either [a] (Step a) -> IO ()
+printNGo :: (Show a, Ord a) => [a] -> IO ()
 printNGo xs = go . pure . stepify $ xs
-  where go :: (Show a, Ord a) => EnSteppe a -> IO ()
+  where go :: (Show a, Ord a) => EnStepped a -> IO ()
         go (Left  lst)  = print lst >> putStrLn "done"
         go (Right step) = do
           print step
           go . bstep' $ step
 
+printStep :: (Show a, Ord a) => EnStepped a -> IO (EnStepped a)
+printStep res@(Left _) = do
+  putStrLn $ "received: "<> show res <> ", work was completed"
+  pure res
+
+printStep res@(Right state) = do
+  putStrLn $ "received: " <> show res <> ", stepping..."
+  pure . bstep' $ state
+
+-- for a quick shuffle-source:
 interleave :: forall a. [a] -> [a] -> [a]
 interleave []     ys = ys
 interleave (x:xs) ys = x : (interleave ys xs)
