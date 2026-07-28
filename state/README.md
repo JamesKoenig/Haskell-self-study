@@ -6,6 +6,8 @@ better.
 
 An example of its use (from my work through its homework):
 ```haskell
+import Control.Monad.Trans.State
+import Data.List (delete)
 count :: Eq a => a -> State [(a,Int)] ()
 count x = do
   kvs <- get
@@ -17,8 +19,9 @@ count x = do
 ```
 e.g. use:
 ```haskell
-ghci> runState (count 'a' >> count 'b' >> count 'a') []
-((),['a',2),('b',1)])
+ghci> import Data.Foldable (traverse_)
+ghci> flip execState [] $ traverse_ count "hello world"
+[('d',1),('l',3),('r',1),('o',2),('w',1),(' ',1),('e',1),('h',1)]
 ```
 
 [1]: https://haskell.mooc.fi/part2#the-state-monad
