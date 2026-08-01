@@ -33,10 +33,15 @@ sBind op f = State h
                        op2 = f val
                    in runState op2 state1
 
---TODO: FIXME: make Functor and applicative instances from scratch
-instance Functor (State s) where
-  fmap f sx = sBind sx (sPure . f)
+oldFmap f sx = sBind sx (sPure . f)
 
+--TODO: logically prove this is equivalent for `oldFmap` above
+instance Functor (State s) where
+  fmap f (State oldStateFn) = State g
+    where g newState = let (val,state') = oldStateFn newState
+                       in (f val, state')
+
+--TODO: FIXME: make Applicative instances from scratch
 instance Applicative (State s) where
   pure = sPure
   sf <*> sx = sf >>= \f -> sx >>= \x -> pure $ f x
