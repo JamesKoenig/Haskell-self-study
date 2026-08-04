@@ -44,6 +44,19 @@ oldApply sf sx = sf >>= \f -> sx >>= \x -> pure $ f x
 --   f <- sf
 --   pure (f <$> sx)
 
+altApply :: State s (a -> b) -> State s a -> State s b
+altApply sf sx = State g
+  where g state0 = let (f, state1) = runState sf state0
+                   in runState (f <$> sx) state1
+
+-- stereotypical functional programming approach of using supershort variables
+overfunctionalApply :: State s (a -> b) -> State s a -> State s b
+overfunctionalApply (State f0) (State f1) = State f2
+  where f2 s0 = let ( g, s1) = f0 s0
+                    ( x, s2) = f1 s1
+                    y = g x
+                in (y,s2)
+
 --TODO: logically prove this is equivalent for `oldFmap` above
 instance Functor (State s) where
   fmap f (State oldStateFn) = State g
