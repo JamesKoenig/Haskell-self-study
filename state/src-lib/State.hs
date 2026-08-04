@@ -4,21 +4,17 @@ module State where
 --   State monad:
 data State s a = State (s -> (a,s))
 
--- The mooc reommends adding this helper function
-state :: (s -> (a, s)) -> State s a
-state f = State f
-
 runState :: State s a -> s -> (a,s)
 runState (State f) s = f s
 
 put  :: s -> State s ()
-put state' = State (\_oldState -> ((),state'))
+put state = State (\_oldState -> ((),state))
 
 get :: State s s
-get = State (\state' -> (state',state'))
+get = State (\state -> (state,state))
 
 modify :: (s -> s) -> State s ()
-modify f = State (\state' -> ((), f state'))
+modify f = State (\state -> ((), f state))
 
 --  because Monad depends on Functor and Applicative I'm breaking out its
 --    two functions here so that I can interact with it now.
@@ -33,6 +29,21 @@ sBind op f = State h
 oldFmap :: (a -> b) -> State s a -> State s b
 oldFmap f sx = sBind sx (sPure . f)
 
+-- sf :: State s (a -> b)
+-- sx :: State s a
+-- (<*>) :: State s (a -> b) -> State s a -> State s b
+oldApply :: State s (a -> b) -> State s a -> State s b
+oldApply sf sx = sf >>= \f -> sx >>= \x -> pure $ f x
+-- the above is eequivalent to
+-- oldApply sf sx = do
+--   f <- sf
+--   x <- sx
+--   pure $ f x
+-- or:
+-- oldApply sf sx = do
+--   f <- sf
+--   pure (f <$> sx)
+
 --TODO: logically prove this is equivalent for `oldFmap` above
 instance Functor (State s) where
   fmap f (State oldStateFn) = State g
@@ -42,7 +53,10 @@ instance Functor (State s) where
 --TODO: FIXME: make Applicative instances from scratch
 instance Applicative (State s) where
   pure = sPure
-  sf <*> sx = sf >>= \f -> sx >>= \x -> pure $ f x
+  sf <*> sx = State g
+    where g state0 = let (f,state1) = runState sf state0
+                         (x,state2) = runState sx state1
+                     in (f x,state2)
 
 instance Monad (State s) where
   --return x = State (\s -> (x,s)) --original version
