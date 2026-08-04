@@ -21,7 +21,7 @@ library
     exposed-modules:  State
     -- other-modules:
     -- other-extensions:
-    build-depends:    base ^>=4.17.2.0
+    build-depends:    base ^>=4.20.2.0
     hs-source-dirs:   src-lib
     default-language: GHC2021
 
@@ -31,7 +31,7 @@ executable state-study
     -- other-modules:
     -- other-extensions:
     build-depends:
-        base ^>=4.17.2.0,
+        base ^>=4.20.2.0,
         state-study
 
     hs-source-dirs:   src-exe
@@ -46,6 +46,6 @@ test-suite state-study-test
     hs-source-dirs:   src-test
     main-is:          Main.hs
     build-depends:
-        base ^>=4.17.2.0
+        base ^>=4.20.2.0
       , QuickCheck
       , state-study
