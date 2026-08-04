@@ -1,10 +1,4 @@
-#!/usr/bin/env stack
-{- stack
-   ghci
-   -v
-   --install-ghc
-   --resolver lts-24.43
- -}
+module State where
 
 -- haskell.mooc.fi Part 2, Lecture 13, Section 8 discusses a simplified
 --   State monad:
