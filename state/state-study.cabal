@@ -46,5 +46,6 @@ test-suite state-study-test
     hs-source-dirs:   src-test
     main-is:          Main.hs
     build-depends:
-        base ^>=4.17.2.0,
-        state-study
+        base ^>=4.17.2.0
+      , QuickCheck
+      , state-study

@@ -8,25 +8,29 @@ data State s a = State (s -> (a,s))
 state :: (s -> (a, s)) -> State s a
 state f = State f
 
+runState :: State s a -> s -> (a,s)
 runState (State f) s = f s
 
 put  :: s -> State s ()
-put state = State (\oldState -> ((),state))
+put state' = State (\_oldState -> ((),state'))
 
 get :: State s s
-get = State (\state -> (state,state))
+get = State (\state' -> (state',state'))
 
 modify :: (s -> s) -> State s ()
-modify f = State (\state -> ((), f state))
+modify f = State (\state' -> ((), f state'))
 
 --  because Monad depends on Functor and Applicative I'm breaking out its
 --    two functions here so that I can interact with it now.
+sPure :: a -> State s a
 sPure x    = State (\s -> (x,s))  --encloses the value
+sBind :: State s a -> (a -> State s b) -> State s b
 sBind op f = State h
   where h state0 = let (val,state1) = runState op state0
                        op2 = f val
                    in runState op2 state1
 
+oldFmap :: (a -> b) -> State s a -> State s b
 oldFmap f sx = sBind sx (sPure . f)
 
 --TODO: logically prove this is equivalent for `oldFmap` above

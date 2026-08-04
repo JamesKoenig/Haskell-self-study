@@ -1,6 +1,5 @@
 module Main (main) where
 
-import State
 import Test.QuickCheck
 import Data.Foldable (traverse_)
 
@@ -23,7 +22,7 @@ instance Function Semaphore where
 main :: IO ()
 main = do
   putStrLn "hello world"
-  fun@(Fun (uh,_,_) f) <- generate arbitrary :: IO (Fun Semaphore TwoEnum)
+  (Fun (uh,_,_) f) <- generate arbitrary :: IO (Fun Semaphore TwoEnum)
   putStrLn "recieved the function:"
   print uh
   putStrLn "generating arguments"

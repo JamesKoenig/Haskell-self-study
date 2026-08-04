@@ -1,16 +1,16 @@
 module Main where
 
-import qualified State
+import qualified State as ST
 
-stateAble :: State () Int
+stateAble :: ST.State Int ()
 stateAble = do
-  x <- get
-  modify (+2)
-  y <- get
-  modify $ \z -> x+y+z
+  x <- ST.get
+  ST.modify (+2)
+  y <- ST.get
+  ST.modify $ \z -> x+y+z
 
 main :: IO ()
 main = do
-  let res = runState stateAble 3
+  let res = ST.runState stateAble 3
 
   putStrLn $ "received: " <> show res
