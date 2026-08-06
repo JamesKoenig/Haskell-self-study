@@ -21,7 +21,8 @@ library
     exposed-modules:  State
     -- other-modules:
     -- other-extensions:
-    build-depends:    base ^>=4.20.2.0
+    build-depends:
+        base ^>=4.20.2.0
     hs-source-dirs:   src-lib
     default-language: GHC2021
 
@@ -40,7 +41,8 @@ executable state-study
 test-suite state-study-test
     import:           warnings
     default-language: GHC2021
-    -- other-modules:
+    other-modules:
+      Lib.State
     -- other-extensions:
     type:             exitcode-stdio-1.0
     hs-source-dirs:   src-test

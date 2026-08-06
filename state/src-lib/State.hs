@@ -80,3 +80,4 @@ instance Monad (State s) where
     where h state0 = let (val,state1) = runState op state0
                          op2 = f val
                      in runState op2 state1
+
