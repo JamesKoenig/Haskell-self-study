@@ -16,7 +16,7 @@ findSumGuard as bs = do
     a  <- as
     a' <- as
     b  <- bs
-    guard (a+a' == b)
+    guard (a+a' == b) --guard :: Alternative f => Bool -> f ()
     return (a, a', b)
 
 -- the originally intended runtime results of the above would be
@@ -44,6 +44,17 @@ findSumGuard' firstInts sumCandidates =
                 )
             )
         )
+
+-- an equivalent version of the above 2 examples using a list comprehension:
+findSumList :: [Int] -> [Int] -> [(Int,Int,Int)]
+findSumList xs ys =
+  [ (x,x',y)
+  | x  <- xs
+  , x' <- xs
+  , y  <- ys
+  , x + x' == y
+  ]
+-- one-line: `[ (x,x',y) | x <- xs, y <- ys, x + x' == y ]`
 
 -- for reference in using bind (>>=) above here is the following ad-hoc example
 --   (simple, in some ways derivative of the above, but, this is my work)
@@ -86,7 +97,7 @@ filterEvenDo numbers = do
     return numbah                 --if successful give numbah back in its
                                   --  containing type
 
--- all 4 of the above filter-even commands run on the same:
+-- all 3 of the above filter-even commands run on different qualifying types:
 -- > filterEvenDo [1..10]
 -- < [2,4,6,8,10]
 -- > filterEvenDo $ Just 4
@@ -124,7 +135,7 @@ filterEvenDo numbers = do
 --but it brings the above code into the periphery of a doctrinal conflict:
 --  https://wiki.haskell.org/MonadPlus_reform_proposal
 --
--- Strinctly speaking though, guard's type signature is:
+-- Strictly speaking though, `guard`'s type signature is:
 --   `Alternative f => Bool -> f ()`
 -- Alternative is walked through in several places notably here:
 --   https://wiki.haskell.org/Typeclassopedia#Definition_7
