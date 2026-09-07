@@ -1,5 +1,8 @@
 ## Building
-wip build instructions, ymmv.
+run `make` or `make all` to build the `example` executable.
 
-`ghc -c -O Example.hs`
-`ghc --make --no-hs-main --optC-O ex.c Example.o -o example`
+|sub-targets:|
+|------------------|----------------------------------|
+| `make clean`     | cleans up the directory          |
+| `make haskell`   | builds the haskell.o file        |
+| `make executable`| compiles c and builds executable |
