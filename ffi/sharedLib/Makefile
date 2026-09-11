@@ -11,12 +11,13 @@ cCode:
 		-o Exec
 
 shared:
-	ghc --make -dynamic -shared -fPIC -flink-rts Ex.hs -o libEx.so
+	ghc --make -dynamic -shared -fPIC -flink-rts Ex.hs iFace.c -o libEx.so
 
 clean:
 	rm\
 		Ex.o\
 		Ex.hi\
 		Ex_stub.h\
+		iFace.o\
 		libEx.so\
 		Exec
