@@ -10,8 +10,14 @@ lib1:
 lib2:
 	echo "STUB"
 
+# really gotta have ghc print where it stores its includes
 main:
-	echo "STUB"
+	clang\
+		main.c\
+		-I /usr/lib/ghc/lib/x86_64-linux-ghc-9.4.7/rts-1.0.2/include\
+		-Wl,-rpath,.\
+		lib1.so\
+		-o doubleTap
 
 clean: clean_lib1
 
@@ -21,5 +27,6 @@ clean_lib1:
 		lib1/libHs.hi\
 		lib1/libHs_stub.h\
 		lib1/libMain.o\
-		lib1.so
+		lib1.so\
+		doubleTap
 
